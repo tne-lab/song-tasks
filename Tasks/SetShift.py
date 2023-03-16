@@ -143,9 +143,13 @@ class SetShift(Task):
             self.nose_poke_lights[2].toggle(False)
             self.change_state(self.States.INTER_TRIAL_INTERVAL, metadata)
         elif self.time_in_state() > self.response_duration:
-            metadata["rule"] = self.rule_sequence[self.cur_rule]
-            metadata["cur_block"] = self.cur_block
-            metadata["rule_index"] = self.cur_rule
+            if self.cur_trial < self.n_random_start or self.cur_trial >= self.n_random_start + self.correct_to_switch * len(
+                    self.rule_sequence):
+                metadata["rule_index"] = -1
+            else:
+                metadata["rule"] = self.rule_sequence[self.cur_rule]
+                metadata["cur_block"] = self.cur_block
+                metadata["rule_index"] = self.cur_rule
             metadata["accuracy"] = "incorrect"
             metadata["response"] = "none"
             self.nose_poke_lights[0].toggle(False)
